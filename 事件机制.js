@@ -1,3 +1,4 @@
+事件流：
 <!DOCTYPE HTML>
 <html>
     <body>
@@ -53,7 +54,72 @@ DOM事件：
             } //通过button按钮触发事件
      }
 
+应用：
+    阻止事件传播：event.stopPropagation();
+    阻止默认事件：event.preventDefault();
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>event</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div id="div" style="width:200px;height:200px;background:#ff0000;">
+            <a href="http://www.baidu.com" id="btn">Button</a>
+        </div>
+    </body>
+    <script>
+        var divEle = document.getElementById('div');
+        var btnEle = document.getElementById('btn');
+        btnEle.addEventListener('click',function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            alert('this is btn')
+        },false);
+        divEle.addEventListener('click',function(){
+            alert('this is div1')
+        },false);
+        divEle.addEventListener('click',function(){
+            alert('this is div2')
+        },true);
+    </script>
+</html>
 
+事件循环：
+    事件循环处理过程：
+        从macrotask队列中(task queue)取一个宏任务执行, 执行完后, 取出所有的microtask执行
+        重复回合
+    macrotask(宏任务): script（整体代码）, setTimeout, setInterval, setImmediate, I/O, UI rendering等
+    microtask(微任务): process.nextTick, Promises, Object.observe, MutationObserver等
+const interval = setInterval(() => {
+  console.log('setInterval')
+}, 0)
+
+setTimeout(() => {  
+  console.log('setTimeout 1')
+  Promise.resolve().then(() => {
+    console.log('promise 3')
+  }).then(() => {
+    console.log('promise 4')
+  }).then(() => {
+    setTimeout(() => {
+      console.log('setTimeout 2')
+      Promise.resolve().then(() => {
+        console.log('promise 5')
+      }).then(() => {
+        console.log('promise 6')
+      }).then(() => {
+          clearInterval(interval)
+      })
+    }, 0)
+  })
+}, 0)
+
+Promise.resolve().then(() => {
+  console.log('promise 1')
+}).then(() => {
+  console.log('promise 2')
+})
   
   
   
