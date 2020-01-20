@@ -1,0 +1,39 @@
+.datepicker{
+    border:1px solid #333;
+    display:flex;
+    flex-direction: column;
+
+    .input{
+        border:0 none;
+        border-bottom:1px solid #929292;
+        input{
+            border:0 none;
+        }
+    }
+    .buttons{
+        padding:10px 10px;
+        border-bottom:1px solid #929292;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .select{
+        padding:0;
+        display:flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        li{
+            width:28px;
+            margin:5px calc((100% / 7 - 28px)/2);
+            box-sizing: border-box;
+            padding:5px 0;
+            list-style:none;
+            text-align: center;
+            cursor: pointer;
+            &:hover{
+                background:#bae7ff;
+            }
+        }
+    }
+}
