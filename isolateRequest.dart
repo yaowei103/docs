@@ -51,10 +51,10 @@ class IsolateCommunication {
     ReceivePort receivePort = ReceivePort();
     sendPort.send(receivePort.sendPort);
 
-    // var modbusPlugin = ModbusActionPower();
-    // String filePath = 'assets/modbus/ppmDCModbus.xlsx';
-    // String filePath485 = 'assets/modbus/DisplayControl.xlsx';
-    // await modbusPlugin.initModbus(filePath: filePath, filePath485: filePath485);
+    String filePath = 'assets/modbus/ppmDCModbus.xlsx';
+    String filePath485 = 'assets/modbus/DisplayControl.xlsx';
+    var modbusPlugin = ModbusActionPower(filePath: filePath, filePath485: filePath485);
+    await modbusPlugin.initDone();
 
     receivePort.listen((message) async {
       if (message is Map && message.containsKey('id') && message.containsKey('request')) {
@@ -63,9 +63,31 @@ class IsolateCommunication {
         late ReturnEntity result;
         var stopWatch = Stopwatch()..start();
         if (request.path == '/setregister') {
-          result = await G.modbusPlugin.setData(startRegAddr: request.body['StartRegAddrOrName'], serializableDat: request.body['SerializableDat']);
+          result = await modbusPlugin.setData(
+            startRegAddr: request.body['StartRegAddrOrName'],
+            serializableDat: request.body['SerializableDat'],
+            customTimeout: request.customTimeout,
+          );
         } else if (request.path == '/getregister') {
-          result = await G.modbusPlugin.getData(startRegAddr: request.body['StartRegAddrOrName'], dataCount: request.body['DataCount']);
+          result = await modbusPlugin.getData(
+            startRegAddr: request.body['StartRegAddrOrName'],
+            dataCount: request.body['DataCount'],
+            customTimeout: request.customTimeout,
+          );
+        } else if (request.path == '/get485register') {
+          result = await modbusPlugin.getData485(
+            startRegAddr: request.body['StartRegAddrOrName'],
+            dataCount: request.body['DataCount'],
+          );
+        } else if (request.path == '/set485register') {
+          result = await modbusPlugin.setData485(
+            startRegAddr: request.body['StartRegAddrOrName'],
+            serializableDat: request.body['SerializableDat'],
+          );
+        } else if (request.path == '/get2bData') {
+          result = await modbusPlugin.get2bData(
+            objectName: request.body['StartRegAddrOrName'],
+          );
         }
         print('-----请求耗时：${stopWatch
           ..stop()
